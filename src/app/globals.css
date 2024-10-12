@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #FAFAFA;
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #FAFAFA;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   color: var(--foreground);
@@ -24,4 +24,19 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+
+.main-uploader .ant-upload-select {
+  width: 100% !important;
+}
+
+.main-uploader .ant-upload-list-text {
+  display: none !important;
+}
+
+.main-uploader .ant-upload-btn {
+  padding: 0 !important;
+  border-radius: 16px;
+  overflow: hidden;
 }
