@@ -28,7 +28,7 @@ export default function EditorLayout({
             <hr />
 
             <div className="w-full flex justify-end p-6">
-              <Button type="primary" size="large" className="w-full md:w-auto">
+              <Button type="primary" size="large">
                 Save
               </Button>
             </div>

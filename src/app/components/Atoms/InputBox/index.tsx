@@ -8,9 +8,9 @@ type InputBoxProps = {
 export default function InputBox(props: InputBoxProps) {
   return (
     <div className="flex flex-col gap-1">
-        {
-            props?.label && <label className="text-gray-700 font-medium">{props?.label}</label>
-        }
+      {props?.label && (
+        <label className="text-gray-700 font-medium">{props?.label}</label>
+      )}
       <Input {...props} />
     </div>
   );
