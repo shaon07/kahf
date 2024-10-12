@@ -42,6 +42,7 @@ type LinkListMenuProps = {
   id?: number;
   onLoad?: (data?: any) => void;
   onRemove?: (data?: any) => void;
+  dragProps?: any
 };
 
 export default function LinkListMenu({
@@ -49,6 +50,7 @@ export default function LinkListMenu({
   onLoad = () => {},
   getData = () => {},
   onRemove = () => {},
+  dragProps = {},
 }: LinkListMenuProps) {
   const [selectedLink, setSelectedLink] = React.useState(linkOptions[0].value);
   const [inputValue, setInputValue] = React.useState("");
@@ -66,7 +68,7 @@ export default function LinkListMenu({
   return (
     <div className="bg-gray-100 rounded-md p-3">
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" {...dragProps}>
           <RiEqualFill color="gray" />
           <span className="font-semibold">Link #{id}</span>
         </div>
