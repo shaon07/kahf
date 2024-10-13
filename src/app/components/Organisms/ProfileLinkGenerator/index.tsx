@@ -37,7 +37,7 @@ export default function ProfileLinkGenerator() {
   };
 
   const handleRemove = (data: any) => {
-    const items = lists.filter((item) => item?.link !== data.link);
+    const items = lists.filter((item) => item?.id !== data.id);
     setLists(items);
     message.error("Link removed successfully");
   };

@@ -6,6 +6,7 @@ import SelectBox from "../../Atoms/SelectBox";
 import InputBox from "../../Atoms/InputBox";
 import { LiaLinkSolid } from "react-icons/lia";
 import { FaGithub, FaLinkedin, FaYoutube } from "react-icons/fa";
+import { Tooltip } from "antd";
 
 const linkOptions = [
   {
@@ -42,7 +43,7 @@ type LinkListMenuProps = {
   id?: number;
   onLoad?: (data?: any) => void;
   onRemove?: (data?: any) => void;
-  dragProps?: any
+  dragProps?: any;
 };
 
 export default function LinkListMenu({
@@ -68,16 +69,18 @@ export default function LinkListMenu({
   return (
     <div className="bg-gray-100 rounded-md p-3">
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2" {...dragProps}>
-          <RiEqualFill color="gray" />
-          <span className="font-semibold">Link #{id}</span>
-        </div>
+        <Tooltip title="Drag to reorder">
+          <div className="flex items-center gap-2" {...dragProps}>
+            <RiEqualFill color="gray" />
+            <span className="font-semibold">Link #{id}</span>
+          </div>
+        </Tooltip>
 
         <button
           onClick={() => onRemove(data)}
           className="text-gray-400 font-semibold"
         >
-          Remove
+          <Tooltip title="Remove Link">Remove</Tooltip>
         </button>
       </div>
 
