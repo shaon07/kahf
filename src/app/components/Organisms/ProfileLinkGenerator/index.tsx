@@ -42,8 +42,7 @@ export default function ProfileLinkGenerator() {
     message.error("Link removed successfully");
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     try {
       if (lists.length !== 0) {
         const data = linkSchema.safeParse(lists[lists.length - 1]);
@@ -82,7 +81,7 @@ export default function ProfileLinkGenerator() {
   };
 
   return (
-    <form className="p-6" onSubmit={handleSubmit}>
+    <div className="p-6">
       <div className="flex flex-col gap-2">
         <h2 className="text-2xl font-bold ">Customize your links</h2>
         <p className="text-gray-500">
@@ -96,7 +95,7 @@ export default function ProfileLinkGenerator() {
         variant="outlined"
         className="w-full mt-6"
         size="large"
-        htmlType="submit"
+        onClick={handleSubmit}
       >
         <FiPlus />
         <span className="font-semibold">Add new link</span>
@@ -126,7 +125,7 @@ export default function ProfileLinkGenerator() {
           </SortableContext>
         </DndContext>
       )}
-    </form>
+    </div>
   );
 }
 

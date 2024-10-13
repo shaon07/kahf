@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import InputBox from "../../Atoms/InputBox";
+import { Form } from "antd";
 
 export default function UserForm() {
   return (
@@ -9,7 +12,15 @@ export default function UserForm() {
           First Name*
         </span>
         <div className="flex-1">
-          <InputBox size="large" className="w-full" />
+          <Form.Item
+            name="firstname"
+            rules={[
+              { required: true },
+              { message: "Please input your firstname!" },
+            ]}
+          >
+            <InputBox size="large" className="w-full" />
+          </Form.Item>
         </div>
       </div>
 
@@ -18,16 +29,30 @@ export default function UserForm() {
           Last Name*
         </span>
         <div className="flex-1">
-          <InputBox size="large" className="w-full" />
+          <Form.Item
+            name="lastname"
+            rules={[
+              { required: true },
+              { message: "Please input your lastname!" },
+            ]}
+          >
+            <InputBox size="large" className="w-full" />
+          </Form.Item>
         </div>
       </div>
 
       <div className="flex items-center">
-        <span className="text-gray-500 font-medium text-md flex-1">
-          Email*
-        </span>
+        <span className="text-gray-500 font-medium text-md flex-1">Email*</span>
         <div className="flex-1">
-          <InputBox type="email" size="large" className="w-full" />
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true },
+              { message: "Please input your email!" },
+            ]}
+          >
+            <InputBox type="email" size="large" className="w-full" />
+          </Form.Item>
         </div>
       </div>
     </div>
