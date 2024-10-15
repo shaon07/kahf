@@ -4,6 +4,7 @@ import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import theme from "@/config/theme";
+import { ReduxProvider } from "@/redux/ReduxProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,7 +34,9 @@ export default function RootLayout({
       >
         <AntdRegistry>
           <ConfigProvider theme={theme}>
-            <main>{children}</main>
+            <ReduxProvider>
+              <main>{children}</main>
+            </ReduxProvider>
           </ConfigProvider>
         </AntdRegistry>
       </body>

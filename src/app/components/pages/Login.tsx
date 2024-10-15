@@ -2,11 +2,14 @@
 
 import React from "react";
 import type { FormProps } from "antd";
-import { Button, Checkbox, Col, Form, Input, Row } from "antd";
+import { Button, Col, Form, Input, Row } from "antd";
 import Link from "next/link";
 import { useRequest } from "ahooks";
 import { loginUser } from "@/controllers/user.controller";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { login, setUserDetails } from "@/redux/userSlice";
+import Cookies from "js-cookie";
 
 type FieldType = {
   email?: string;
@@ -16,15 +19,21 @@ type FieldType = {
 
 const LoginContainer: React.FC = () => {
   const router = useRouter();
+
+  const dispatch = useDispatch();
   const data = useRequest((data) => loginUser(data), {
     onSuccess: (data) => {
-      console.log(data);
-      router.push("/links");
+      if (data?.status === "success") {
+        dispatch(login());
+        dispatch(setUserDetails(data?.data));
+        router.push("/links");
+        Cookies.set("isUser", "true", { expires: 7 });
+        Cookies.set("Token", data?.data?.accessToken)
+      }
     },
     manual: true,
   });
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log(values)
     data.run(values);
   };
 
@@ -51,9 +60,7 @@ const LoginContainer: React.FC = () => {
             <Form.Item<FieldType>
               label="Email"
               name="email"
-              rules={[
-                { required: true, message: "Please input your email!" },
-              ]}
+              rules={[{ required: true, message: "Please input your email!" }]}
             >
               <Input size="large" />
             </Form.Item>
@@ -69,7 +76,7 @@ const LoginContainer: React.FC = () => {
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit" size="large">
+              <Button type="primary" htmlType="submit" size="large"  loading={data.loading} disabled={data.loading}>
                 Submit
               </Button>
             </Form.Item>

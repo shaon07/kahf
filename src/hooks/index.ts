@@ -1,6 +1,9 @@
 "use client";
+import { AppDispatch, RootState } from "@/redux/store";
 import { message } from "antd";
 import React from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 export function useDimension() {
   const [width, setWidth] = React.useState(0);
@@ -57,3 +60,7 @@ export default function useMessage() {
     warning,
   };
 }
+
+
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
+export const useAppSelector = useSelector.withTypes<RootState>()
