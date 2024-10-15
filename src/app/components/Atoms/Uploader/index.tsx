@@ -6,6 +6,7 @@ import { FiImage } from "react-icons/fi";
 import Image from "next/image";
 import { FileType } from "@/types";
 import { getBase64 } from "@/utils";
+import { useAppSelector } from "@/hooks";
 
 const { Dragger } = Upload;
 
@@ -13,8 +14,9 @@ type UploaderProps = {
   onChange?: (file: UploadFile, url: string) => void;
 };
 
-const Uploader: React.FC = ({ onChange = () => {} }: UploaderProps) => {
-  const [imageUrl, setImageUrl] = useState<string>();
+function Uploader({ onChange = () => {} }: UploaderProps) {
+  const user = useAppSelector((state) => state.user);
+  const [imageUrl, setImageUrl] = useState<string>(user.detail?.picture);
   const props: UploadProps = {
     name: "file",
     multiple: false,
@@ -23,17 +25,17 @@ const Uploader: React.FC = ({ onChange = () => {} }: UploaderProps) => {
       setImageUrl(url);
       const { status } = info.file;
       if (status !== "uploading") {
-        console.log(info.file, info.fileList);
+        // console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        onChange(info.file, url);
+        onChange(info.file.originFileObj as FileType, url);
         message.success(`${info.file.name} file uploaded successfully.`);
       } else if (status === "error") {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
     onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
+      // console.log("Dropped files", e.dataTransfer.files);
     },
   };
 
@@ -45,7 +47,7 @@ const Uploader: React.FC = ({ onChange = () => {} }: UploaderProps) => {
             <Image
               src={imageUrl}
               alt="avatar"
-              className="rounded-md w-full h-full object-cover"
+              className="rounded-md w-full h-full max-h-40 object-cover"
               width={100}
               height={100}
             />
@@ -71,6 +73,6 @@ const Uploader: React.FC = ({ onChange = () => {} }: UploaderProps) => {
       </Dragger>
     </>
   );
-};
+}
 
 export default Uploader;

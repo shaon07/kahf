@@ -27,7 +27,6 @@ const RegisterContainer: React.FC = () => {
     }
   });
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
     data.run(values);
   };
 
