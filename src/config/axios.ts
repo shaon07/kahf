@@ -17,7 +17,7 @@ api.interceptors.request.use(
   (config) => {
     // Modify request config before sending, like adding authorization token
     const state: RootState = store.getState(); 
-    const token = state.user.detail?.accessToken;
+    const token = Cookies.get("Token") || state.user.detail?.accessToken;
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }

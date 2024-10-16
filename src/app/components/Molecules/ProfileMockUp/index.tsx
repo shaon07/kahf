@@ -12,7 +12,7 @@ export default function ProfileMockUp() {
       {user?.detail?.username ? (
         <UserPictureAndName
           picture={user?.detail?.picture || DEFAULT_IMAGE}
-          name={user?.detail?.username}
+          name={user?.detail?.firstname + " " + user?.detail?.lastname}
           email={user?.detail?.email}
         />
       ) : (

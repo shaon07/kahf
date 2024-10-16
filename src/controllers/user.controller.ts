@@ -1,7 +1,7 @@
 import api from "@/config/axios";
 
-export const getUserDetail = async (id: string) => {
-  return await api.get(`/users/${id}`).then((res) => res.data);
+export const getUserDetail = async () => {
+  return await api.get(`/users/detail`).then((res) => res.data);
 };
 
 export const updateUser = async (id: string, data: any) => {

@@ -29,13 +29,15 @@ export default function ProfileLinkGenerator() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
   const [list, setList] = useState({} as LinkType);
-  const finalList = [...user.detail.socialLinks];
+  const finalList = [...user?.detail?.socialLinks || []];
   const [lists, setLists] = useState<LinkType[]>([...finalList]);
+
+  console.log(lists)
 
   const handleSaveData = (data: any) => {
     const exist = lists.find((l) => l.platform === data.platform);
 
-    if (exist?.serial) {
+    if (exist?.platform) {
       setList(data);
       return;
     }
@@ -52,7 +54,7 @@ export default function ProfileLinkGenerator() {
 
     const prevData = lists.find((l) => l.platform === list.platform);
 
-    if (prevData?.serial) {
+    if (prevData?.platform) {
       const updatedData = lists?.filter((l) => l.platform !== list.platform);
       const newData = [...updatedData, { ...list, serial: String(prevData?.serial) }];
       setLists(newData);
@@ -128,10 +130,10 @@ export default function ProfileLinkGenerator() {
             strategy={verticalListSortingStrategy}
           >
             <div className="mt-6 flex flex-col gap-6">
-              {lists.map((item) => (
+              {lists.map((item, index) => (
                 <MemoizedSortableItem
-                  key={item.serial}
-                  serial={item.serial}
+                  key={String(index + 1)}
+                  serial={String(index + 1)}
                   url={item.url}
                   item={item}
                   disabled={true}
@@ -173,9 +175,9 @@ const SortableItem = ({
       className="bg-white p-4 border border-gray-300 rounded-md"
     >
       <LinkListMenu
-        key={item.serial}
+        key={serial}
         getData={handleSaveData}
-        serial={item.serial}
+        serial={serial}
         link={url}
         platform={platform}
         onLoad={onLoad}

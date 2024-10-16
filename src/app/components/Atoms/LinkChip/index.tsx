@@ -1,3 +1,4 @@
+import { Typography } from "antd";
 import Link from "next/link";
 import React from "react";
 import { BiChevronRight } from "react-icons/bi";
@@ -10,6 +11,8 @@ type LinkChipProps = {
   children?: React.ReactNode;
   url?: string;
 };
+
+const { Paragraph } = Typography;
 
 export default function LinksChip({ type, children, url="#" }: LinkChipProps) {
   const chipBGColor = {
@@ -31,7 +34,8 @@ export default function LinksChip({ type, children, url="#" }: LinkChipProps) {
       >
         <div className="flex items-center">
           {chipsIcons[type]}
-          <span>{children || type}</span>
+          <Paragraph className="!mb-1" copyable={{text: url}}><span className="text-white">{children || type}</span></Paragraph>
+          
         </div>
         <BiChevronRight className="w-5 h-5" />
       </button>
