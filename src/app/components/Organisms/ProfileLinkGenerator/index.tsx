@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, message } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import LinkListMenu from "../../Molecules/LinkListMenu";
 import { linkSchema } from "@/schema/link.schema";
@@ -21,45 +21,56 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { storeSocialLinks } from "@/redux/userSlice";
+import { LinkType } from "@/types";
 
 export default function ProfileLinkGenerator() {
-  const [lists, setLists] = React.useState([] as any[]);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
+  const [list, setList] = useState({} as LinkType);
+  const finalList = [...user.detail.socialLinks];
+  const [lists, setLists] = useState<LinkType[]>([...finalList]);
 
   const handleSaveData = (data: any) => {
-    const prevData = lists?.find((item) => item?.id === data?.id);
-    if (prevData) {
-      prevData.link = data.link;
-      setLists([...lists]);
+    const exist = lists.find((l) => l.platform === data.platform);
+
+    if (exist?.serial) {
+      setList(data);
       return;
     }
-
-    setLists([...lists, data]);
-  };
-
-  const handleRemove = (data: any) => {
-    const items = lists.filter((item) => item?.id !== data.id);
-    setLists(items);
-    message.error("Link removed successfully");
+    setList({ ...data, serial: String(finalList.length + 1) });
   };
 
   const handleSubmit = () => {
-    try {
-      if (lists.length !== 0) {
-        const data = linkSchema.safeParse(lists[lists.length - 1]);
-        if (!data.success) {
-          message.error(data.error?.issues[0]?.message);
-          return;
-        } else {
-          message.success("Link added successfully");
-        }
-      }
-      setLists([
-        ...lists,
-        { platform: "github", link: "", id: lists.length + 1 },
-      ]);
-    } catch (error: any) {
-      console.log(error?.message);
+    const isListValid = linkSchema.safeParse(list);
+
+    if (!isListValid.success) {
+      message.error(isListValid.error?.issues[0]?.message);
+      return;
     }
+
+    const prevData = lists.find((l) => l.platform === list.platform);
+
+    if (prevData?.serial) {
+      const updatedData = lists?.filter((l) => l.platform !== list.platform);
+      const newData = [...updatedData, { ...list, serial: String(prevData?.serial) }];
+      setLists(newData);
+      dispatch(
+        storeSocialLinks(newData)
+      );
+      return;
+    }
+
+    dispatch(storeSocialLinks([...lists, list]));
+    setLists([...lists, list]);
+  };
+
+  const handleRemove = (data: LinkType) => {
+    const items = finalList.filter((item) => item?.serial !== data.serial);
+    dispatch(storeSocialLinks(items));
+    setLists(items);
+    message.error("Link removed successfully");
   };
 
   const sensors = useSensors(
@@ -71,10 +82,10 @@ export default function ProfileLinkGenerator() {
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (active.serial !== over.serial) {
       setLists((prevLists) => {
-        const oldIndex = prevLists.findIndex((item) => item.id === active.id);
-        const newIndex = prevLists.findIndex((item) => item.id === over.id);
+        const oldIndex = prevLists.findIndex((item) => item.serial === active.serial);
+        const newIndex = prevLists.findIndex((item) => item.serial === over.serial);
         return arrayMove(prevLists, oldIndex, newIndex);
       });
     }
@@ -95,11 +106,16 @@ export default function ProfileLinkGenerator() {
         variant="outlined"
         className="w-full mt-6"
         size="large"
+        // disabled={finalList.length === 0}
         onClick={handleSubmit}
       >
         <FiPlus />
         <span className="font-semibold">Add new link</span>
       </Button>
+
+      <div className="mt-4">
+        <LinkListMenu getData={handleSaveData} link={list.url} />
+      </div>
 
       {lists.length > 0 && (
         <DndContext
@@ -108,15 +124,18 @@ export default function ProfileLinkGenerator() {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={lists.map((item) => item.id)} // Pass the array of item ids to SortableContext
+            items={lists.map((item) => item.serial)}
             strategy={verticalListSortingStrategy}
           >
             <div className="mt-6 flex flex-col gap-6">
               {lists.map((item) => (
                 <MemoizedSortableItem
-                  key={item.id}
-                  id={item.id}
+                  key={item.serial}
+                  serial={item.serial}
+                  url={item.url}
                   item={item}
+                  disabled={true}
+                  platform={item.platform}
                   handleSaveData={handleSaveData}
                   handleRemove={handleRemove}
                 />
@@ -129,9 +148,18 @@ export default function ProfileLinkGenerator() {
   );
 }
 
-const SortableItem = ({ id, item, handleSaveData, handleRemove }: any) => {
+const SortableItem = ({
+  serial,
+  item,
+  disabled,
+  handleSaveData,
+  url,
+  platform,
+  handleRemove,
+  onLoad,
+}: any) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+    useSortable({ id:serial });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -145,9 +173,13 @@ const SortableItem = ({ id, item, handleSaveData, handleRemove }: any) => {
       className="bg-white p-4 border border-gray-300 rounded-md"
     >
       <LinkListMenu
-        key={item.id}
+        key={item.serial}
         getData={handleSaveData}
-        id={item.id}
+        serial={item.serial}
+        link={url}
+        platform={platform}
+        onLoad={onLoad}
+        disabled={disabled}
         dragProps={{ ...attributes, ...listeners }}
         onRemove={handleRemove}
       />

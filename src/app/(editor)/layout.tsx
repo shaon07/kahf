@@ -27,8 +27,9 @@ export default function EditorLayout({
     },
   });
   const onFinish: FormProps<any>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    data.run(values);
+    const payload = { ...values, socialLinks: user?.detail?.socialLinks?.map((item: any) => ({ platform: item.platform, url: item?.url })) };
+    console.log(payload)
+    data.run(payload);
   };
 
   const onFinishFailed: FormProps<any>["onFinishFailed"] = (errorInfo) => {
@@ -52,9 +53,9 @@ export default function EditorLayout({
           <Form
             name="basic"
             initialValues={{
-              firstname: user.detail.firstname,
-              lastname: user.detail.lastname,
-              email: user.detail.email,
+              firstname: user.detail.firstname || "",
+              lastname: user.detail.lastname || "",
+              email: user.detail.email || "",
             }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}

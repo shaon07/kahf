@@ -1,7 +1,7 @@
 import {z} from "zod";
 
 export const linkSchema = z.object({
-    id: z.number().positive().int(),
-    link: z.string().url(),
-    platform: z.string(),
+    serial: z.union([z.string(), z.number()]).default(1),
+    url: z.string({message:"url must be a valid URL"}).url(),
+    platform: z.string({message:"platform must be a valid platform"})
 })

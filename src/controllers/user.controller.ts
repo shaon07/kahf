@@ -10,7 +10,7 @@ export const updateUser = async (id: string, data: any) => {
   data?.email && formData.append("email", data.email);
   data?.firstname && formData.append("firstname", data.firstname);
   data?.lastname && formData.append("lastname", data.lastname);
-
+  data.socialLinks && formData.append("socialLinks", JSON.stringify(data.socialLinks));
   return await api
     .patch(`/users/${id}`, formData, {
       headers: {

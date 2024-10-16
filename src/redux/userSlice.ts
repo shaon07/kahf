@@ -27,12 +27,24 @@ export const userSlice = createSlice({
     clearUserDetails: (state) => {
       state.detail = {};
     },
+    storeSocialLinks: (state, action) => {
+      state.detail.socialLinks = action.payload;
+    },
+    clearSocialLinks: (state) => {
+      state.detail.socialLinks = [];
+    },
   },
 });
 
 // Export actions
-export const { login, logout, setUserDetails, clearUserDetails } =
-  userSlice.actions;
+export const {
+  login,
+  logout,
+  setUserDetails,
+  clearUserDetails,
+  storeSocialLinks,
+  clearSocialLinks,
+} = userSlice.actions;
 
 // Export selector
 export const userDetail = (state: { user: UserState }) => state.user;
